@@ -1,0 +1,50 @@
+ls
+    Shows all Prolog files (including those within folders) in the working directory.
+
+load :Condition
+    Loads Prolog files in the working directory that validate the condition set.
+    Conditions can be added continuously:
+        Atom        -> all file names that include Atom.
+        +Atom       -> all file names that include Atom.
+        -Atom       -> all file names that don't include Atom.
+        A1 + A2     -> A1 and file names that include A2.
+        A1 - A2     -> A1 and file names that don't include A2.
+        A1 / A2     -> A1 or A2.
+        C1 +> C2    -> all files from condition 1 and 2.
+
+input :Goal
+    Declares a goal within a file to be executed later by run/1, it isn't executed at load time.
+
+run(+Options)
+    Shows the outcomes from the goals within input/1. The options:
+        show_true(Bool)     -> show succeeded input(s), default true.
+        show_false(Bool)    -> show failed input(s), default false.
+        write(+File)        -> output to file, default to terminal.
+        write()             -> output to output.tesdsl, default to terminal.
+
+runf
+    Uses run/1 with the options: show_true(true), show_false(true), write().
+
+run
+    Uses run/1 with the default options.
+
+read_project_path
+    From the file ~/swi-prolog/project_path.tesdsl, it changes the working directory to the path it read.
+
+write_project_path(+Dir)
+    Changes the path written in the file ~/swi-prolog/project_path.tesdsl and of the working directory.
+
+change_folder(+Dir)
+    Changes the path of the working directory.
+
+tree_display(+List)
+    Displays a list in a tree structure.
+
+tree_display(+List, -Text)
+    Outputs a string of a list in a tree structure.
+
+read_file(+File, -Text)
+    Outputs the contents of the file.
+
+write_file(+File, +Text)
+    Overwrites the contents of a file.
