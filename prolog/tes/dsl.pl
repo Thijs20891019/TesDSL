@@ -16,7 +16,9 @@ ls:-
     tree_display(U).
 
 dev_help:-
-    pack_file_path(data,'dev_help.txt',File),
+    directory_file_path('data','dev_help.txt',DataFile),
+    pack_property(tesdsl, directory(Dir)), 
+    directory_file_path(Dir,DataFile,File),
     read_file(File,Text), write(Text).
 
 

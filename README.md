@@ -10,7 +10,7 @@ It is intended for users who want to quickly load, run, and test Prolog code acr
 ### Installation
 
 ```
-?- pack_install(tesdsl,[url('https://github.com/Thijs20891019/TesDSL.git')]).
+?- pack_install(tesdsl).
 ?- use_module(library(tesdsl)).
 ```
 
@@ -165,6 +165,19 @@ To change to a different folder that will revert to the project folder once the 
 > The predicates `write_project_path/1` and `change_folder/1` change the loaded folder immediately.
 > Files that are currently loaded stay loaded and won't unload when using `load/1` in a folder not containing these files.
 
+Folders that should be ignored by `ls/0` and `load/1` can be listed in a file named `.tesignore` located in the project root.
+> **File:** ***.tesignore***
+> ```
+> a2
+> A3
+> ```
+As a test, here is the outcome from `?- ls.`.
+```
+?- ls.
+├── A1
+│   └── n3.pl
+└── test.pl
+```
 
 ### Predicates
 

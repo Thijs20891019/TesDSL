@@ -3,6 +3,17 @@
 ]).
 
 
+ignore(_):- 
+    \+ exists_file('.tesignore'),
+    !, false.
+ignore(Folder):-
+    read_file('.tesignore',Content),
+    string_lower(Content,String),
+    split_string(String,"\n","",Ignore),
+    string_lower(Folder,Name),
+    member(Name,Ignore).
+
+
 folder_contents(Display_list,Files_list,Validate):-
     working_directory(CWD,CWD),
     folder_contents(CWD,Display_list,Files_list,CWD-Validate).
@@ -15,7 +26,7 @@ folder_contents(_,[],[],[],_):-!.
 
 folder_contents(Dir,[Folder|Dir_content],[[Folder,[L|List]]|Display_list],Files_list,Validate):-
     absolute_file_name(Folder,New_dir,[file_type(directory),relative_to(Dir),file_errors(fail)]),
-    Folder \= '.', Folder \= '..', % If necessary, block certain folders here that can be ignored.
+    Folder \= '.', Folder \= '..', \+ ignore(Folder),
     folder_contents(New_dir,[L|List],Content,Validate), !,
     append(Content,More_files,Files_list),
     folder_contents(Dir,Dir_content,Display_list,More_files,Validate).

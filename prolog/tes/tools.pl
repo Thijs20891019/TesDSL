@@ -8,8 +8,7 @@
     terms_to_atoms/2,
     complex_to_atom/2,
     filter_terms/2,
-    convert_list/3,
-    pack_file_path/3
+    convert_list/3
 ]).
 
 
@@ -82,9 +81,3 @@ convert_list([Title|Rest],[Title|Next_T],[Title|Next]):-
 convert_list([[Title,Solution]|Rest],Title,[Solution|Next_S],Rest_N):-
     convert_list(Rest,Title,Next_S,Rest_N), !.
 convert_list(Rest_N,_,[],Rest_N).
-
-
-pack_file_path(Folder,File,Path):-
-    pack_property(tesdsl,directory(Dir)),
-    directory_file_path(Dir,Folder,Dir_f),
-    directory_file_path(Dir_f,File,Path).
