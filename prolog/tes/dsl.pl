@@ -17,7 +17,7 @@ ls:-
 
 dev_help:-
     directory_file_path('data','dev_help.txt',DataFile),
-    pack_property(tesdsl, directory(Dir)), 
+    absolute_file_name(pack(tesdsl),Dir),
     directory_file_path(Dir,DataFile,File),
     read_file(File,Text), write(Text).
 
