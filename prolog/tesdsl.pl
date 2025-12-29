@@ -7,17 +7,20 @@
     write_file/2,
     read_file/2,
     dev_help/0,
-    runf/0,
     run/0,
-    run/1,
     ls/0
 ]).
 
-:- user:consult(tes/setup).
+:- set_prolog_flag(encoding,utf8).
+:- multifile user:input/1.
+:- op(950, fx, user:input).
+:- op(950, fx, user:load).
+:- op(950, fx, user:tes).
+:- op(800, xfy, user:(+>)).
 
-:- use_module(tes/display).
-:- use_module(tes/tools).
-:- use_module(tes/path).
-:- use_module(tes/dsl).
+:- use_module(tesdsl/display).
+:- use_module(tesdsl/tools).
+:- use_module(tesdsl/path).
+:- use_module(tesdsl/dsl).
 
 :- read_project_path.

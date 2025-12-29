@@ -1,3 +1,7 @@
+tes :Activate
+    This is an operator that executes DSL code. Activate is defined by:
+    <*.tes-filename>(<listname>)
+
 ls
     Shows all Prolog files (including those within folders) in the working directory.
 
@@ -14,16 +18,6 @@ load :Condition
 
 input :Goal
     Declares a goal within a file to be executed later by run/1, it isn't executed at load time.
-
-run(+Options)
-    Shows the outcomes from the goals within input/1. The options:
-        show_true(Bool)     -> show succeeded input(s), default true.
-        show_false(Bool)    -> show failed input(s), default false.
-        write(+File)        -> output to file, default to terminal.
-        write()             -> output to output.tesdsl, default to terminal.
-
-runf
-    Uses run/1 with the options: show_true(true), show_false(true), write().
 
 run
     Uses run/1 with the default options.

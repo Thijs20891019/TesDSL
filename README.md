@@ -18,12 +18,12 @@ It is intended for users who want to quickly load, run, and test Prolog code acr
 ### Predicates
 
 ```
+tes/1                   --> An operator that executes DSL code.
+
 ls/0                    --> Shows all Prolog files in the working directory.
 load/1                  --> Loads Prolog files that validate the condition set.
 input/1                 --> Declares a goal within a file.
-run/1                   --> Runs all goals declared by input/1.
-run/0                   --> Uses run/1 with the default options.
-runf/0                  --> Uses run/1 and writes to a file.
+run/0                   --> Runs all goals declared by input/1.
 
 read_project_path/0     --> Reads the project path, changes working directory.
 write_project_path/1    --> Changes the project path, changes working directory.
@@ -34,6 +34,110 @@ tree_display/2          --> Outputs a string of a list in a tree structure.
 read_file/2             --> Outputs the contents of the file.
 write_file/2            --> Overwrites the contents of a file.
 ```
+
+
+
+## The domain-specific language
+
+### Operator
+
+```
+tes :Activate
+    This is an operator that executes DSL code. Activate is defined by:
+    <*.tes-filename>(<listname>)
+```
+
+An example would be:
+```
+?- tes file(name).
+```
+
+
+### DSL documentation
+
+The `tes` operator looks for a file with the extension `.tes`.
+
+In the DSL, each named block inside a `.tes` file is called an _actionlist_:
+```
+listname {
+    ...
+}
+```
+
+Within _actionlists_ are _actions_, an _action_ is always ended with `;`.
+
+This is a list of different _actions_ with their explanation:
+```
+> :Listname;            --> Includes all actions from the specified actionlist at this point.
+
+load;                   --> Reloads the loaded files from load/1.
+load :Condition;        --> Behaves the same as load/1.
+load {...};             --> Loads specific Prolog files in the list.
+
+input;                  --> Finds all goals declared by input/1.
+input {...};            --> Finds the goals declared inside the list.
+
+inspect;                --> Gathers the succeeded and failed goals from input.
+inspect all;            --> Gathers all the goals outcomes and their statistics.
+inspect only;           --> Gathers only the statistics from the goals.
+inspect loss;           --> Gathers the succeeded goals statistics that backtrack without solution.
+inspect {...};          --> Gathers specific statistics from the goals.
+
+display;                --> Shows the results in the terminal.
+
+write +Filename;        --> Writes the results to a file.
+```
+
+Certain _actions_ can contain _actionitems_, an _actionitem_ is always ended with `;`.
+
+The _action_ `load {...};`, can contain relative or absolute paths to files.
+```
+load {
+    folder/file.pl;
+    ~/file.pl;
+};
+```
+
+The _action_ `input {...};`, can contain Prolog goals.
+```
+input {
+    member(X,[a,b,c]);
+};
+```
+
+The _action_ `inspect {...};`, can contain items that limit the range that is inspected.
+```
+inspect {
+    true;               --> Searches for predicates that succeed.
+    false;              --> Searches for predicates that fail.
+    inferences; infs;   --> Shows the number of inferences.
+    cpu; CPU; time;     --> Shows the amount of time the CPU takes.
+    wall; clock; time;  --> Shows the amount of run time it takes.
+};
+```
+
+A default `.tes` file is provided within the pack, this file is used by run/0.
+> **File:** ***default.tes***
+> ```
+> default {
+>     load;
+>     input;
+>     inspect;
+>     display;
+> }
+> ```
+
+The predicate run/0 internally calls:
+```
+?- tes default(default).
+```
+
+Note that multiple _actionlists_ can be specified when invoking the DSL:
+```
+?- tes default(default,listname,otherlist,etc).
+```
+Each _actionlist_ is expanded and executed in the order provided.
+Internally, the arguments are treated as a sequence of _actionlist_ names.
 
 
 
@@ -85,9 +189,9 @@ Make sure to include `input Goal.` in the file for the goals.
 > input testing_a(a,b).
 > ```
 
-Then use `?- run(Options).`, `?- run.` to display the output or `?- runf.` to output to a file.
+Then use `?- run.` to display the output.
 ```
-?- run([show_false(true)]).
+?- run.
 Succeeded:
 ├── testing_n(_,_)
 │   ├── 1 '2'
@@ -122,20 +226,10 @@ load :Condition
         C1 +> C2    -> all files from condition 1 and 2.
 
 input :Goal
-    Declares a goal within a file to be executed later by run/1, it isn't executed at load time.
-
-run(+Options)
-    Shows the outcomes from the goals within input/1. The options:
-        show_true(Bool)     -> show succeeded input(s), default true.
-        show_false(Bool)    -> show failed input(s), default false.
-        write(+File)        -> output to file, default to terminal.
-        write()             -> output to output.tesdsl, default to terminal.
-
-runf
-    Uses run/1 with the options: show_true(true), show_false(true), write().
+    Declares a goal within a file to be executed later by the dsl, it isn't executed at load time.
 
 run
-    Uses run/1 with the default options.
+    Shows the outcomes from the goals within input/1.
 ```
 
 
@@ -165,7 +259,7 @@ To change to a different folder that will revert to the project folder once the 
 > The predicates `write_project_path/1` and `change_folder/1` change the loaded folder immediately.
 > Files that are currently loaded stay loaded and won't unload when using `load/1` in a folder not containing these files.
 
-Folders that should be ignored by `ls/0` and `load/1` can be listed in a file named `.tesignore` located in the project root.
+Folders or files that should be ignored by `ls/0` and `load/1` can be listed in a file named `.tesignore` located in the project root.
 > **File:** ***.tesignore***
 > ```
 > a2

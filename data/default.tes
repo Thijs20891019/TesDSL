@@ -1,0 +1,6 @@
+default {
+    load;
+    input;
+    inspect;
+    display;
+}

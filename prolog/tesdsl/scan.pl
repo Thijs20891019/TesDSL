@@ -33,6 +33,7 @@ folder_contents(Dir,[Folder|Dir_content],[[Folder,[L|List]]|Display_list],Files_
 
 folder_contents(Dir,[File|Dir_content],[File|Display_list],[File_path|Files_list],CWD-Validate):-
     absolute_file_name(File,File_path,[extensions([pl,pro,prolog,plt,ecl]),relative_to(Dir),access(exist),file_errors(fail)]),
+    \+ ignore(File),
     directory_file_path(CWD,CWD_file_path,File_path), 
     validation_check(Validate,CWD_file_path), !,
     folder_contents(Dir,Dir_content,Display_list,Files_list,CWD-Validate).

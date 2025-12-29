@@ -1,7 +1,7 @@
 :- module(display, [
     tree_display/1,
     tree_display/2,
-    display_output/3
+    create_display/3
 ]).
 
 :- use_module(tools).
@@ -46,36 +46,7 @@ tree_display(List):-
 
 
 
-display_output(Goals,Sols,Options):-
-    findall(Out,create_output(Goals,Sols,Out,Options),[L|List]),
-    atomics_to_string([L|List],"\n",Text),
-    write_output(Text,Options).
-
-
-create_output(_,[I|L],Out,Options):-
-    \+member(show_true(false),Options),
-    convert_list([I|L],List_T,_),
-    create_display(List_T,"Succeeded",Out).
-
-create_output([I|L],U,Out,Options):-
-    member(show_false(true),Options),
-    convert_list(U,_,List_S),
-    subtract([I|L],List_S,List_F),
-    create_display(List_F,"Failed",Out).
-
 create_display([L|List],Prefix,Out):-
     tree_display_create([L|List],Output_list,""),
     atomics_to_string(Output_list,"│\n",Text),
     format(string(Out),"~w:~n~w",[Prefix,Text]).
-
-
-write_output(Text,Options):-
-    member(write(F),Options),
-    atomic(F), write_file(F,Text), !.
-
-write_output(Text,Options):-
-    member(write(),Options),
-    write_file('output.tesdsl',Text), !.
-
-write_output(Text,_):-
-    write(Text).
